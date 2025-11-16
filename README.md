@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<video src="./public/vid.mp4" autoplay loop muted playsinline width="600"></video>
+![VyomGarud Landing Page](./public/img/Screenshot%202025-11-16%20223147.png)
 
 </div>
 
