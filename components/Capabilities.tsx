@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
-import { Eye, Target, Cpu, MapPin, ArrowRight } from 'lucide-react';
+import { Eye, Target, Cpu, ArrowRight } from 'lucide-react';
 
 const capabilities = [
   {
@@ -35,6 +35,22 @@ export default function Capabilities() {
     target: containerRef,
     offset: ["start start", "end end"]
   });
+
+  // Create transform values for each card (must be at top level, not in callbacks)
+  const card0X = useTransform(scrollYProgress, [0, 0.2], [800, 0]);
+  const card0Opacity = useTransform(scrollYProgress, [0, 0.1, 0.2], [0, 1, 1]);
+  
+  const card1X = useTransform(scrollYProgress, [0.15, 0.35], [800, 0]);
+  const card1Opacity = useTransform(scrollYProgress, [0.15, 0.25, 0.35], [0, 1, 1]);
+  
+  const card2X = useTransform(scrollYProgress, [0.3, 0.5], [800, 0]);
+  const card2Opacity = useTransform(scrollYProgress, [0.3, 0.4, 0.5], [0, 1, 1]);
+
+  const cardTransforms = [
+    { x: card0X, opacity: card0Opacity },
+    { x: card1X, opacity: card1Opacity },
+    { x: card2X, opacity: card2Opacity }
+  ];
 
   return (
     <div ref={containerRef} style={{ height: '400vh' }} className="relative">
@@ -76,35 +92,21 @@ export default function Capabilities() {
           {/* Cards Grid */}
           <div className="grid md:grid-cols-3 gap-3 lg:gap-6 w-full max-w-6xl mx-auto" style={{marginLeft:'auto', marginRight:'auto'}}>
             {capabilities.map((capability, index) => {
-              // Each card animates in sequence
-              const startProgress = index * 0.15;
-              const endProgress = startProgress + 0.2;
-              
-              const cardX = useTransform(
-                scrollYProgress,
-                [startProgress, endProgress],
-                [800, 0]
-              );
-              
-              const cardOpacity = useTransform(
-                scrollYProgress,
-                [startProgress, startProgress + 0.1, endProgress],
-                [0, 1, 1]
-              );
+              const { x, opacity } = cardTransforms[index];
 
               return (
                 <motion.div
                   key={capability.title}
                   style={{ 
-                    x: cardX,
-                    opacity: cardOpacity
+                    x,
+                    opacity
                   }}
                   whileHover={{ y: -8, scale: 1.02 }}
                   className="group relative"
                 >
                   <div className="rounded-2xl p-6 sm:p-8 h-full border border-white/10 hover:border-[#ff7b00]/50 transition-all duration-500 overflow-hidden backdrop-blur-md bg-black/40" style={{paddingTop:'1rem', paddingBottom:'1rem', paddingLeft:'2rem', paddingRight:'2rem'}}>
                     {/* Gradient Background */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                    <div className={`absolute inset-0 bg-linear-to-br ${capability.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                     
                     <div className="relative z-10">
                       {/* Icon */}
